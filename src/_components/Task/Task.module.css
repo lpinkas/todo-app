@@ -1,0 +1,39 @@
+.task{
+    border:none;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    cursor: pointer;
+}
+
+.completed{
+    border:none;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: line-through;
+}
+
+.label {
+    min-height: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button {
+    margin-left: 10px;
+    float: right;
+    background: red;
+    color: white;
+    border: white;
+    cursor: pointer;
+}
+
+.details {
+    color: black;
+    text-decoration: none;
+    float: right;
+}
+
+.details:visited, .details:hover {
+    color: gray;
+}

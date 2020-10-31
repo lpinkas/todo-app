@@ -1,24 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Link, Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import "./App.css";
+import TaskDetail from "./_components/TaskDetail/TaskDetail";
+import TaskList from "./_components/TaskList/TaskList";
+
+function HomePage() {
+  return (
+    <>
+      <h1>Bienvenido a la ToDoApp</h1>
+      <h2>La app de tareas!</h2>
+
+      <Link to="/tasks">Ver todas las tareas (Router)</Link>
+
+      <a href="/tasks">Ver todas las tareas (anchore)</a>
+    </>
+  );
+}
+
+function NotFound() {
+  return <h1>No se encontro lo que buscaba...</h1>;
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route exact path="/tasks">
+            <TaskList header="Tareas del día" />
+          </Route>
+          <Route path="/tasks/:id" component={TaskDetail} />
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
