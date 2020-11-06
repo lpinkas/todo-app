@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
-import { getTasks } from "../../services/tasks";
+import { getTasks, createTask, deleteTask } from "../../services/tasks";
 import Loader from "../Loader/Loader";
 import { Task } from "../Task";
 import "./TaskList.css";
@@ -9,6 +9,7 @@ function TaskList({ header, history }) {
   const [tasks, setTasks] = useState([]);
   const [newTaskDesc, setNewTaskDesc] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const getTaskList = async () => {
     const response = await getTasks();
@@ -23,9 +24,13 @@ function TaskList({ header, history }) {
     getTaskList();
   }, []);
 
-  const handleDelete = (id) => {
-    //setTasks(tasks.filter(task => task.id !== id));
-    //Implementar llamado a la api
+  const handleDelete = async (id) => {
+    const { status, data } = await deleteTask(id);
+    if(status) {
+      getTaskList();
+    } else {
+      setError(data);
+    }
   };
 
   const handleReload = () => {
@@ -33,20 +38,27 @@ function TaskList({ header, history }) {
     getTaskList();
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const newTask = {
-      id: tasks.length + 2,
-      title: newTaskDesc,
-      createdAt: new Date().toISOString(),
+      name: newTaskDesc,
+      isComplete: false,
     };
 
     setNewTaskDesc("");
 
-    //setTasks([newTask, ...this.state.tasks]);
-    //Implementar llamado a la api
+    const { status, data } = await createTask(newTask);
+    if(status) {
+      getTaskList();
+    } else {
+      setError(data);
+    }
+
   };
 
-  const handleDescChange = (e) => setNewTaskDesc(e.target.value);
+  const handleDescChange = (e) => {
+    setNewTaskDesc(e.target.value);
+    setError('');
+  }
 
   const goBack = () => history.goBack();
 
@@ -66,6 +78,7 @@ function TaskList({ header, history }) {
           onChange={handleDescChange}
           value={newTaskDesc}
         ></input>
+        {error && <span className="error">{error}</span>}
       </div>
       <div className="buttonContainer">
         <button

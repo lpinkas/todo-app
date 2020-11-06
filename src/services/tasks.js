@@ -28,3 +28,37 @@ export async function getTask(id) {
     return { status: false, data: error.message };
   }
 }
+
+export async function createTask(task) {
+  try {
+    const response = await instance.post(`/Todo/`, task);
+    if (response.status === 201) {
+      return { status: true, data: response.data };
+    }
+  } catch (error) {
+    return { status: false, data: error.message };
+  }
+}
+
+export async function deleteTask(id) {
+  try {
+    const response = await instance.delete(`/Todo/${id}`);
+    if (response.status === 204) {
+      return { status: true, data: response.data };
+    }
+  } catch (error) {
+    return { status: false, data: error.message };
+  }
+}
+
+export async function toggleCompleteTask(task) {
+  try {
+    task.isComplete = !task.isComplete;
+    const response = await instance.put(`/Todo/${task.id}`, task);
+    if (response.status === 204) {
+      return { status: true, data: response.data };
+    }
+  } catch (error) {
+    return { status: false, data: error.message };
+  }
+}

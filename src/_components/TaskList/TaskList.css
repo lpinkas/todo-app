@@ -50,3 +50,9 @@ input {
       display: flex;
       justify-content: space-between;
   }
+
+  .error {
+    color: red;
+    font-size: small;
+    font-weight: bold;
+  }
