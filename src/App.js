@@ -1,65 +1,27 @@
-import React, { useContext } from "react";
-import { Link, Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import React from "react";
+import {
+  Route,
+  BrowserRouter as Router,
+  Switch,
+} from "react-router-dom";
 import "./App.css";
-import { UserContext } from "./context/UserContext/UserContext";
-import Login from "./_components/Login";
-import TaskDetail from "./_components/TaskDetail/TaskDetail";
-import TaskList from "./_components/TaskList/TaskList";
-
-function HomePage() {
-  return (
-    <>
-      <h1>Bienvenido a la ToDoApp</h1>
-      <h2>La app de tareas!</h2>
-
-      <Link to="/tasks">Ver todas las tareas (Router)</Link>
-
-      <a href="/tasks">Ver todas las tareas (anchore)</a>
-    </>
-  );
-}
-
-function NotFound() {
-  return <h1>No se encontro lo que buscaba...</h1>;
-}
-
-function Layout({ children }) {
-  const id = useContext(UserContext).id;
-  return (
-    <>
-      <h1>Header layout {id}</h1>
-      {children}
-    </>
-  );
-}
-
+import PublicRoute from "./_components/Routes/PublicRoute";
+import PrivateRoute from "./_components/Routes/PrivateRoute";
+import { HomePage, Register, Login, TaskList, TaskDetail  } from "./_pages/";
 
 function App() {
-  const isAuth = true;
   return (
     <div className="App">
-      {isAuth && (
+      <Router>
+        <Switch>
+          <PublicRoute path="/login" exact component={Login} />
+          <PublicRoute path="/register" exact component={Register} />
 
-        <Layout>
-          <Router>
-            <Switch>
-              <Route exact path="/" >
-                <HomePage />
-              </Route>
-              <Route exact path="/tasks">
-                <TaskList header="Tareas del día" />
-              </Route>
-              <Route path="/tasks/:id" component={TaskDetail} />
-              <Route path="*">
-                <NotFound />
-              </Route>
-            </Switch>
-          </Router>
-          </Layout>
-
-      )}
-
-      {!isAuth && <Login />}
+          <PrivateRoute exact path="/" component={HomePage}/>
+          <PrivateRoute path="/tasks" exact component={TaskList}/>
+          <PrivateRoute path="/tasks/:id" exact component={TaskDetail}/>
+        </Switch>
+      </Router>
     </div>
   );
 }

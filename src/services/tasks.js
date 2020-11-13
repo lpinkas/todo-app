@@ -1,13 +1,11 @@
-import axios from "axios";
+import instance from "./configure";
 
-const instance = axios.create({
-  baseURL: "https://localhost:5001/api",
-});
+const resource = '/todos';
 
 export async function getTasks() {
   let tasks = [];
   try {
-    const response = await instance.get("/Todo");
+    const response = await instance.get(resource);
     console.log(response);
     if (response.status === 200) {
       tasks = response.data;
@@ -20,7 +18,7 @@ export async function getTasks() {
 
 export async function getTask(id) {
   try {
-    const response = await instance.get(`/Todo/${id}`);
+    const response = await instance.get(`${resource}/${id}`);
     if (response.status === 200) {
       return { status: true, data: response.data };
     }
@@ -31,7 +29,7 @@ export async function getTask(id) {
 
 export async function createTask(task) {
   try {
-    const response = await instance.post(`/Todo/`, task);
+    const response = await instance.post(`${resource}/`, task);
     if (response.status === 201) {
       return { status: true, data: response.data };
     }
@@ -42,7 +40,7 @@ export async function createTask(task) {
 
 export async function deleteTask(id) {
   try {
-    const response = await instance.delete(`/Todo/${id}`);
+    const response = await instance.delete(`${resource}/${id}`);
     if (response.status === 204) {
       return { status: true, data: response.data };
     }
@@ -53,9 +51,21 @@ export async function deleteTask(id) {
 
 export async function toggleCompleteTask(task) {
   try {
+    console.log(task);
     task.isComplete = !task.isComplete;
-    const response = await instance.put(`/Todo/${task.id}`, task);
+    const response = await instance.put(`${resource}/${task.id}`, task);
     if (response.status === 204) {
+      return { status: true, data: task };
+    }
+  } catch (error) {
+    return { status: false, data: error.message };
+  }
+}
+
+export async function getTypes(id) {
+  try {
+    const response = await instance.get(`${resource}/types`);
+    if (response.status === 200) {
       return { status: true, data: response.data };
     }
   } catch (error) {
