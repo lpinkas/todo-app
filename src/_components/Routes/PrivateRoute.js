@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { isAuthenticated } from "../../services/users";
 import { Layout } from "../Layout/Layout";
+import { userContext } from "../../context/UserContext/context";
 
 function PrivateRoute({ component: Component, ...rest }) {
-  console.log('Auth', isAuthenticated());
+  const { isAuthenticated } = useContext(userContext).stateUser;
   return (
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated() ? (
+        isAuthenticated ? (
           <Layout>
             <Component {...props} />
           </Layout>

@@ -4,7 +4,7 @@ const instance = axios.create({
   baseURL: "https://localhost:5001/api",
 });
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem('jwt');
 if (token)
   instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 

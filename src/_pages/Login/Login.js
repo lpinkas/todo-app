@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { loginUser } from '../../context/UserContext/actions';
+import { userContext } from '../../context/UserContext/context';
 import { login } from '../../services/users';
 import styles from './Login.module.css'
 
 const Login = () => {
+
+  const context = useContext(userContext);
+
   const history = useHistory();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await login(email, password);
-    if(response.status) {
-      history.push('/tasks');
-    }
+    loginUser(email, password, context.dispatch, setErrorMessage, setSuccess);
   }
 
   const handleChange = (event) => {
@@ -26,6 +30,12 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    if(success) {
+      history.push('/tasks');
+    }
+  }, [success, history]);
+
   return (
     <>
       <h2 className={styles.title}>Login</h2>
@@ -34,6 +44,7 @@ const Login = () => {
         <span>{emailError}</span>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
         <input type="submit" value="Ingresar!"/>
+        <span className="error">{errorMessage}</span>
       </form>
         <Link to={'/register'} >
           Registrate!

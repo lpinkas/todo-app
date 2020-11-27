@@ -1,67 +1,48 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { getTasks, createTask, deleteTask, getTypes } from "../../services/tasks";
+import { userContext } from "../../context/UserContext/context";
+import {
+  getTasks,
+  createTask,
+  deleteTask,
+  getTypes,
+} from "../../services/tasks";
 import Loader from "../../_components/Loader/Loader";
 import Task from "../../_components/Task/Task";
 import "./TaskList.css";
 
-const TaskList = ({ header, history }) => {
-  const [tasks, setTasks] = useState([]);
-  const [types, setTypes] = useState([]);
+const TaskList = (props) => {
+  const { user } = useContext(userContext).stateUser;
+
   const [newTaskDesc, setNewTaskDesc] = useState("");
-  const [type, setType] = useState();
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const { tasks, setTasks, isLoading, header } = props;
 
   const getTaskList = async () => {
+    props.onTasksLoading();
     const response = await getTasks();
     if (response.status) {
       setTasks(response.data);
       setNewTaskDesc("");
     }
-    setIsLoading(false);
+    props.onTasksLoaded();
   };
-
-  const getTaskTypes = async () => {
-    const response = await getTypes();
-    if (response.status) {
-      setTypes(response.data);
-      setType(response.data[0].id);
-    }
-    setIsLoading(false);
-  };
-
-  const handleTypeChange = (event) => {
-    setType(event.target.value);
-  }
-
-
 
   useEffect(() => {
     getTaskList();
-    getTaskTypes();
   }, []);
 
-  const handleDelete = async (id) => {
-    const { status, data } = await deleteTask(id);
-    if (status) {
-      getTaskList();
-    } else {
-      setError(data);
-    }
-  };
-
   const handleReload = () => {
-    setIsLoading(true);
     getTaskList();
   };
 
   const handleCreate = async () => {
     const newTask = {
       name: newTaskDesc,
-      type,
       isComplete: false,
+      userId: user.id,
     };
 
     setNewTaskDesc("");
@@ -78,7 +59,6 @@ const TaskList = ({ header, history }) => {
     setNewTaskDesc(e.target.value);
     setError("");
   };
-
   return (
     <Fragment>
       <h1>{header}</h1>
@@ -90,13 +70,8 @@ const TaskList = ({ header, history }) => {
             onChange={handleDescChange}
             value={newTaskDesc}
           ></input>
-          <select onChange={handleTypeChange}>
-            {types && types.map(t => (
-              <option value={t.id}>{t.descripcion}</option>
-            ))}
-          </select>
         </div>
-          {error && <span className="error">{error}</span>}
+        {error && <span className="error">{error}</span>}
         <div className="buttonContainer">
           <button
             type="submit"
@@ -119,11 +94,30 @@ const TaskList = ({ header, history }) => {
       {isLoading && <Loader></Loader>}
       <ul className="list">
         {tasks.map((task) => (
-          <Task task={task} onDelete={handleDelete} key={task.id} />
+          <Task task={task} key={task.id} id={task.id} />
         ))}
       </ul>
     </Fragment>
   );
-}
+};
 
-export default withRouter(TaskList);
+const mapStateToProps = (state) => {
+  return {
+    tasks: state.tasks,
+    isLoading: state.isLoading,
+  };
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    onTasksLoading: (userId) => dispatch({ type: "LOAD_TASKS_INIT", userId }),
+    onTasksLoaded: (userId) =>
+      dispatch({ type: "LOAD_TASKS_COMPLETED", userId }),
+    setTasks: (tasks) => dispatch({ type: "UPDATE_TASKS", payload: { tasks } }),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(withRouter(TaskList));

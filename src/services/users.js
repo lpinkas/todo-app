@@ -6,7 +6,6 @@ export async function login(email, password) {
   try {
     const response = await instance.post(`${resource}/login`, { email, password });
     if (response.status === 200) {
-      localStorage.setItem('token', response.data)
       setClientToken(response.data);
       return { status: true, data: response.data };
     }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { UserContext } from "../../context/UserContext/UserContext";
-import { toggleCompleteTask } from "../../services/tasks";
+import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
+import { deleteTask, getTasks, toggleCompleteTask } from "../../services/tasks";
 import styles from "./Task.module.css";
 
 const Task = (props) => {
@@ -16,9 +16,22 @@ const Task = (props) => {
     }
   };
 
-  const handleDelete = () => {
-    const { onDelete, task } = props;
-    onDelete(task.id);
+  const getTaskList = async () => {
+    props.onTasksLoading();
+    const response = await getTasks();
+    if (response.status) {
+      props.setTasks(response.data);
+    }
+    props.onTasksLoaded();
+  };
+
+  const handleDelete = async () => {
+    const { status } = await deleteTask(props.id);
+    if (status) {
+      getTaskList();
+    } else {
+      //setError(data);
+    }
   };
 
   const { task } = props;
@@ -39,4 +52,19 @@ const Task = (props) => {
   );
 };
 
-export default Task;
+const mapStateToProps = state => {
+  return {
+    tasks: state.tasks,
+    isLoading: state.isLoading
+  };
+}
+
+const mapActionsToProps = dispatch => {
+  return {
+    onTasksLoading: userId => dispatch({ type: 'LOAD_TASKS_INIT',  userId }),
+    onTasksLoaded: userId => dispatch({ type: 'LOAD_TASKS_COMPLETED',  userId }),
+    setTasks: tasks => dispatch({ type: 'UPDATE_TASKS', payload: { tasks }})
+  }
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(withRouter(Task));
