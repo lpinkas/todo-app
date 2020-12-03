@@ -1,7 +1,8 @@
 import axios from "axios";
 
+console.log(process.env, process.env.REACT_APP_NOT_SECRET_CODE);
 const instance = axios.create({
-  baseURL: "https://localhost:5001/api",
+  baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
 const token = localStorage.getItem('jwt');
