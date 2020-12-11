@@ -26,9 +26,9 @@ export async function register(email, password) {
 }
 
 export function logout() {
-  localStorage.removeItem('token');
+  localStorage.removeItem('jwt');
 }
 
 export function isAuthenticated() {
-  return !!localStorage.getItem("token");
+  return !!localStorage.getItem("jwt");
 }

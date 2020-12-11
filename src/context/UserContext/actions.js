@@ -1,12 +1,11 @@
 import jwt_decode from "jwt-decode";
-import { login } from "../../services/users";
+import { login, logout } from "../../services/users";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 
 export const loginUser = async (email, password, dispatch, seterror, setSuccess) => {
   //login
   const { status, data } = await login(email, password);
   if (status) {
-    console.log('Login exitoso', data);
     const token = data;
     localStorage.setItem("jwt", token);
     const decoded = jwt_decode(token);
@@ -31,6 +30,6 @@ export const setCurrentUser = (decoded) => {
 
 export const logoutUser = (dispatch) => {
   //logout
-  localStorage.removeItem("jwt");
-  dispatch(setCurrentUser({}));
+  logout();
+  dispatch(setCurrentUser(null));
 };

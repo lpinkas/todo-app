@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { loginUser } from '../../context/UserContext/actions';
 import { userContext } from '../../context/UserContext/context';
-import { login } from '../../services/users';
 import styles from './Login.module.css'
 
 const Login = () => {

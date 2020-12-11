@@ -6,7 +6,6 @@ export async function getTasks() {
   let tasks = [];
   try {
     const response = await instance.get(resource);
-    console.log(response);
     if (response.status === 200) {
       tasks = response.data;
       return { status: true, data: tasks };
@@ -51,7 +50,6 @@ export async function deleteTask(id) {
 
 export async function toggleCompleteTask(task) {
   try {
-    console.log(task);
     task.isComplete = !task.isComplete;
     const response = await instance.put(`${resource}/${task.id}`, task);
     if (response.status === 204) {

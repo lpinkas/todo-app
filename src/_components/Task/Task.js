@@ -6,13 +6,14 @@ import styles from "./Task.module.css";
 
 const Task = (props) => {
   const [done, setDone] = useState(props.task.isComplete);
+  const [error, setError] = useState('');
 
   const handleClick = async () => {
     const { status, data } = await toggleCompleteTask(props.task);
     if (status) {
       setDone(data.isComplete);
     } else {
-      console.log(data);
+      setError('No se pudo cambiar el estado de la tarea');
     }
   };
 
@@ -48,6 +49,7 @@ const Task = (props) => {
           Detalles
         </Link>
       </div>
+      <span className="error">{error}</span>
     </li>
   );
 };

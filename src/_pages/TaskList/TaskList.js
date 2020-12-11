@@ -5,8 +5,6 @@ import { userContext } from "../../context/UserContext/context";
 import {
   getTasks,
   createTask,
-  deleteTask,
-  getTypes,
 } from "../../services/tasks";
 import Loader from "../../_components/Loader/Loader";
 import Task from "../../_components/Task/Task";
@@ -32,6 +30,7 @@ const TaskList = (props) => {
 
   useEffect(() => {
     getTaskList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReload = () => {

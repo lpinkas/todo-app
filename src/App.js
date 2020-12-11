@@ -1,14 +1,12 @@
 import React from "react";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
 import PublicRoute from "./_components/Routes/PublicRoute";
 import PrivateRoute from "./_components/Routes/PrivateRoute";
 import { HomePage, Register, Login, TaskList, TaskDetail } from "./_pages/";
 import { Provider } from "react-redux";
 import taskStore from "./redux/Tasks";
-import counterStore from "./redux/Counter";
 import Auth from "./context/UserContext/context";
-import { Layout } from "./_components/Layout/Layout";
 
 function App() {
   return (
@@ -17,7 +15,7 @@ function App() {
       <Auth>
         <Provider store={taskStore}>
           <Router>
-
+            Learn
             <Switch>
               {/* <Route path="/welcome" exact component={LandingPage} />*/ }
 

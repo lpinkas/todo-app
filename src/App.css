@@ -33,3 +33,9 @@ h1 {
   content: "<";
   margin-right: 2px;
 }
+
+.error {
+  color: red;
+  font-size: small;
+  font-weight: bold;
+}

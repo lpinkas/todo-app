@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState } from "react";
+import React, { useReducer, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import authReducer from "./reducer";
 import { setCurrentUser } from "./actions";
